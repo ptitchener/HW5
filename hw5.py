@@ -52,13 +52,15 @@ def read_book(book):
     paperwick_papers.txt = a.read()
     a.close()
     """
-def split_book(book):
+def strip_extra(book):
     a = read_book(book)
-    b = a.split()
+    start = a.index(' ***')
+    end = a.index('End of the Project Gutenberg')
+    return a[start:end] 
         
 def delete_extra(book):
     #a = ['asdf','asdf','adsf','\xe2\x80\x94asdf','asdf']
-    b = read_book(book)
+    b = strip_extra(book)
     a = b.split()
     #a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
     i = 0
@@ -71,6 +73,9 @@ def delete_extra(book):
             a[i] = a[i].translate(None,'\xe2\x80\x98')
         elif '.' in a[i]:
             a[i] = a[i].translate(None,'.')
+        elif '\xef\xbb\xbf' in a[i]:
+            a[i] = a[i].translate(None,'\xef\xbb\xbf')
+
     return a
             
 
@@ -84,8 +89,10 @@ def makesdic(book):
     text= delete_extra(book)
     #text = ''.join(str(e) for e in text_list)
     dic = dict()
+    dic = {'_all_':0}
     dic_100 = {}
     for w in text:
+        dic['_all_'] +=1
         if w in dic.keys():
             dic[w] = dic[w]+1
             if dic[w] >100:
@@ -95,10 +102,14 @@ def makesdic(book):
             dic[w] = 1
     return dic_100
     
+
     
-    
-    
-    
+def word_freq(book):
+    count = makesdic(book)
+    for w in count:
+        if w != '_all_':  
+            count[w] = float(count[w])/count['_all_']
+    return count
     
     
     
@@ -106,8 +117,10 @@ if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
 
     #print test('oliver_twist1.txt')
-    print makesdic('oliver_twist.txt')
-
+    #print makesdic('oliver_twist.txt')
+    #print word_freq('oliver_twist.txt')
+    c =  strip_extra('oliver_twist.txt')
+    print c[-500:]
 
 
 
