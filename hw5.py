@@ -75,7 +75,7 @@ def delete_extra(book):
             a[i] = a[i].translate(None,'.')
         elif '\xef\xbb\xbf' in a[i]:
             a[i] = a[i].translate(None,'\xef\xbb\xbf')
-
+        a.lower()
     return a
             
 
@@ -119,9 +119,7 @@ if __name__ == '__main__':
     #print test('oliver_twist1.txt')
     #print makesdic('oliver_twist.txt')
     #print word_freq('oliver_twist.txt')
-    c =  strip_extra('oliver_twist.txt')
-    print c[-500:]
-
+    a = word_freq
 
 
 
