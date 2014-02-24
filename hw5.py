@@ -58,9 +58,9 @@ def split_book(book):
         
 def delete_extra(book):
     #a = ['asdf','asdf','adsf','\xe2\x80\x94asdf','asdf']
-    #b = read_book(book)
-    #a = b.split()
-    a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
+    b = read_book(book)
+    a = b.split()
+    #a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
     i = 0
     for i in range(len(a)):
         if '\xe2\x80\x94' in a[i]:
@@ -74,34 +74,40 @@ def delete_extra(book):
     return a
             
 
-"""
-hard_times = URL('http://www.gutenberg.org/files/786/786-0.txt').download().decode('UTF-8')
-
-
-tokens = nltk.word.tokenize(text)
-"""
+def makesdic(book):
+    """
+    Take a list of strings. Figure out how many times a specific word occurs. 
+    And then make that into a dictionary.
+    """
+    
+    #text = "hello there hi there"
+    text= delete_extra(book)
+    #text = ''.join(str(e) for e in text_list)
+    dic = dict()
+    dic_100 = {}
+    for w in text:
+        if w in dic.keys():
+            dic[w] = dic[w]+1
+            if dic[w] >100:
+                dic_100[w] = dic[w]
+            
+        else:
+            dic[w] = 1
+    return dic_100
+    
+    
+    
+    
+    
+    
+    
+    
 if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
 
-    print test('oliver_twist1.txt')
-    
+    #print test('oliver_twist1.txt')
+    print makesdic('oliver_twist.txt')
 
-
-
-"""
-Take a list of strings. Figure out how many times a specific word occurs. 
-And then make that into a dictionary.
-"""
-
-def makesdic():
-    text = "hello there hi there"
-    dic = dict()
-    for w in text.split():
-        if w in dic.keys():
-            dic[w] = dic[w]+1
-        else:
-            dic[w] = 1
-    return dic
 
 
 
