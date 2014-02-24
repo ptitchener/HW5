@@ -67,3 +67,43 @@ tokens = nltk.word.tokenize(text)
 if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
     print test('oliver_twist1.txt')
+    
+
+
+
+"""
+Take a list of strings. Figure out how many times a specific word occurs. 
+And then make that into a dictionary.
+"""
+
+def makesdic():
+    text = "hello there hi there"
+    dic = dict()
+    for w in text.split():
+        if w in dic.keys():
+            dic[w] = dic[w]+1
+        else:
+            dic[w] = 1
+    return dic
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
