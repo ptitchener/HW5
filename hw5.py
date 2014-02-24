@@ -52,11 +52,27 @@ def read_book(book):
     paperwick_papers.txt = a.read()
     a.close()
     """
-def test(book):
+def split_book(book):
     a = read_book(book)
     b = a.split()
-    return b
-    
+        
+def delete_extra(book):
+    #a = ['asdf','asdf','adsf','\xe2\x80\x94asdf','asdf']
+    #b = read_book(book)
+    #a = b.split()
+    a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
+    i = 0
+    for i in range(len(a)):
+        if '\xe2\x80\x94' in a[i]:
+            a[i] = a[i].translate(None,'\xe2\x80\x94')
+        elif '\xe2\x80\x99' in a[i]:
+            a[i] = a[i].translate(None,'\xe2\x80\x99')
+        elif '\xe2\x80\x98' in a[i]:
+            a[i] = a[i].translate(None,'\xe2\x80\x98')
+        elif '.' in a[i]:
+            a[i] = a[i].translate(None,'.')
+    return a
+            
 
 """
 hard_times = URL('http://www.gutenberg.org/files/786/786-0.txt').download().decode('UTF-8')
@@ -66,6 +82,7 @@ tokens = nltk.word.tokenize(text)
 """
 if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
+
     print test('oliver_twist1.txt')
     
 
@@ -85,23 +102,6 @@ def makesdic():
         else:
             dic[w] = 1
     return dic
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
