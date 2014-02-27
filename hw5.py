@@ -54,13 +54,20 @@ def read_book(book):
     """
 def strip_extra(book):
     a = read_book(book)
-    start = a.index(' ***')
-    end = a.index('End of the Project Gutenberg')
+
+    try:
+        end = a.index('End of the Project Gutenberg')
+    except ValueError:
+        end = a.index('*** END OF')
+    
+    ind1 = a.index('***')
+    start= a.index('***',ind1)
     return a[start:end] 
         
 def delete_extra(book):
     #a = ['asdf','asdf','adsf','\xe2\x80\x94asdf','asdf']
     b = strip_extra(book)
+    b.lower
     a = b.split()
     #a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
     i = 0
@@ -75,7 +82,6 @@ def delete_extra(book):
             a[i] = a[i].translate(None,'.')
         elif '\xef\xbb\xbf' in a[i]:
             a[i] = a[i].translate(None,'\xef\xbb\xbf')
-        a.lower()
     return a
             
 
@@ -92,7 +98,7 @@ def makesdic(book):
     dic = {'_all_':0}
     dic_100 = {}
     for w in text:
-        dic['_all_'] +=1
+        #dic['_all_'] +=1
         if w in dic.keys():
             dic[w] = dic[w]+1
             if dic[w] >100:
@@ -106,12 +112,80 @@ def makesdic(book):
     
 def word_freq(book):
     count = makesdic(book)
+    a = sum(count.values())
     for w in count:
-        if w != '_all_':  
-            count[w] = float(count[w])/count['_all_']
+        #f w != '_all_':  
+        count[w] = float(count[w])/(a)
     return count
     
     
+def list_sort(book):
+    #a = word_freq(book)
+    a = {'the':5,'said':40,'blah':1,'super':553}
+    b = [(v, k) for v,k in a.iteritems()]
+    #sort = sorted(b, key=lambda tup: tup[0])
+    return sort
+    
+def compare(book1,book2):
+    freq1 = word_freq(book1)
+    freq2 = word_freq(book2)
+    
+    #freq1 = {'red':5,'blue':24,'green':2}
+    #freq2 = {'red':2,'green':5,'purple':4}
+    c = dict(freq1.items() + freq2.items())
+    all_words = map(list,zip(c))
+    #return c
+    flattened = recursive_flatten(all_words)
+    L1 = []
+    L2 = []
+    for w in flattened:
+        L1.append(freq1.get(w, 0))
+        L2.append(freq2.get(w, 0))
+        
+    #print L1
+    #print L2
+    mag1 = magnitude(L1)
+    mag2 = magnitude(L2)
+    dot = dotprod(L1,L2)
+    
+    similarity = dot/(mag1*mag2)
+    return similarity
+    
+    
+    
+    
+    
+    
+def magnitude(L):
+    if type(L) != list:
+        raise Exception("L must be a list")
+    a = 0
+    
+    for w in L:
+        a = a + w**2
+    return a**.5
+
+def dotprod(L1,L2):
+    if len(L1) != len(L2):
+        raise Exception('Lenghts of vectors must be equal')
+    i = 0
+    a = 0
+    for i in range(len(L1)):
+        a = a + L1[i]*L2[i]
+    return a
+                 
+        
+        
+
+def recursive_flatten(L):
+    L1 = []
+    for i in range(len(L)):
+        if type(L[i])==list:
+            L1  = L1 + (recursive_flatten(L[i]))
+        else:
+           L1.append(L[i])
+    return L1
+  
     
 if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
@@ -119,8 +193,8 @@ if __name__ == '__main__':
     #print test('oliver_twist1.txt')
     #print makesdic('oliver_twist.txt')
     #print word_freq('oliver_twist.txt')
-    a = word_freq
+    #a = word_freq
 
-
-
-
+    #print list_sort('blah')
+    print compare('oliver_twist.txt','Dar_origin.txt')
+    #print word_freq('hard_times.txt')
