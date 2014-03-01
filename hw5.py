@@ -6,9 +6,7 @@ Created on Sun Feb 23 18:36:25 2014
 """
 import pickle
 from pattern.web import *
-import nltk, re, pprint
 from urllib import urlopen
-from bs4 import BeautifulSoup
 import collections
 
 def import_books():
@@ -195,6 +193,6 @@ if __name__ == '__main__':
     #a = word_freq
 
     #print list_sort('blah')
-    print compare('Dar_voy.txt','Dar_voy.txt')
+    print compare('our_mutual_friend.txt','Dar_voy.txt')
     #print word_freq('hard_times.txt')
     #print strip_extra('Dar_voy.txt')
