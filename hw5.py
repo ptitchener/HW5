@@ -9,6 +9,7 @@ from pattern.web import *
 import nltk, re, pprint
 from urllib import urlopen
 from bs4 import BeautifulSoup
+import collections
 
 def import_books():
     """
@@ -58,7 +59,10 @@ def strip_extra(book):
     try:
         end = a.index('End of the Project Gutenberg')
     except ValueError:
-        end = a.index('*** END OF')
+        try:
+            end = a.index('*** END OF')
+        except ValueError:
+            end = a.index('***END OF')
     
     ind1 = a.index('***')
     start= a.index('***',ind1)
@@ -97,16 +101,17 @@ def makesdic(book):
     dic = dict()
     dic = {'_all_':0}
     dic_100 = {}
-    for w in text:
+    return collections.Counter(text)
+    #for w in text:
         #dic['_all_'] +=1
-        if w in dic.keys():
-            dic[w] = dic[w]+1
-            if dic[w] >100:
-                dic_100[w] = dic[w]
+        #if w in dic.keys():
+            #dic[w] = dic[w]+1
+            #if dic[w] >100:
+                #dic_100[w] = dic[w]
             
-        else:
-            dic[w] = 1
-    return dic_100
+        #else:
+            #dic[w] = 1
+   # return dic_100
     
 
     
@@ -196,5 +201,6 @@ if __name__ == '__main__':
     #a = word_freq
 
     #print list_sort('blah')
-    print compare('oliver_twist.txt','Dar_origin.txt')
+    print compare('Dar_voy.txt','our_mutual_friend.txt')
     #print word_freq('hard_times.txt')
+    #print strip_extra('Dar_voy.txt')
