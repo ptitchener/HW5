@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 import collections
 
 def import_books():
-    """
+    
     oliver_twist_full_text = URL('http://www.gutenberg.org/ebooks/730.txt.utf-8').download()
     hard_times = URL('http://www.gutenberg.org/files/786/786-0.txt').download()
     our_mutual_friend = URL('http://www.gutenberg.org/cache/epub/883/pg883.txt').download()
@@ -29,7 +29,7 @@ def import_books():
     d = open('paperwick_papers.txt','w')
     d.write(paperwick_papers)
     d.close()
-    """
+    
     url = "http://www.gutenberg.org/files/786/786-0.txt"
     oliver_twist= urlopen(url).read()
     a = open('oliver_twist1.txt','w')
@@ -41,18 +41,7 @@ def read_book(book):
     returns = a.read()
     a.close()
     return returns
-    """
-    a.close()
-    a = open('oliver_twist.txt','r')
-    oliver_twist = a.read()
-    a.close()
-    a = open('our_mutual_friend.txt','r')
-    our_mutual_friend = a.read()
-    a.close()
-    a = open('paperwick_papers.txt','r')
-    paperwick_papers.txt = a.read()
-    a.close()
-    """
+
 def strip_extra(book):
     a = read_book(book)
 
@@ -139,6 +128,11 @@ def compare(book1,book2):
     #freq2 = {'red':2,'green':5,'purple':4}
     c = dict(freq1.items() + freq2.items())
     all_words = map(list,zip(c))
+    #freq1_list = recursive_flatten(map(list,zip(freq1)))
+    #freq2_list = recursive_flatten(map(list,zip(freq2)))
+    freq1_list = freq1.values()
+    freq2_list = freq2.values()
+    #print freq2_list
     #return c
     flattened = recursive_flatten(all_words)
     L1 = []
@@ -149,8 +143,8 @@ def compare(book1,book2):
         
     #print L1
     #print L2
-    mag1 = magnitude(L1)
-    mag2 = magnitude(L2)
+    mag1 = magnitude(freq1_list)
+    mag2 = magnitude(freq2_list)
     dot = dotprod(L1,L2)
     
     similarity = dot/(mag1*mag2)
@@ -201,6 +195,6 @@ if __name__ == '__main__':
     #a = word_freq
 
     #print list_sort('blah')
-    print compare('Dar_voy.txt','our_mutual_friend.txt')
+    print compare('Dar_voy.txt','Dar_voy.txt')
     #print word_freq('hard_times.txt')
     #print strip_extra('Dar_voy.txt')
