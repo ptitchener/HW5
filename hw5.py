@@ -13,6 +13,7 @@ import collections
 #import matplotlib as mpl
 
 def import_books():
+    """ Imports books from project gutenberg using the patter command. This function is run once and then the books are saved to the same folder as the python script"""
     
     oliver_twist_full_text = URL('http://www.gutenberg.org/ebooks/730.txt.utf-8').download()
     hard_times = URL('http://www.gutenberg.org/files/786/786-0.txt').download()
@@ -30,22 +31,18 @@ def import_books():
     d = open('paperwick_papers.txt','w')
     d.write(paperwick_papers)
     d.close()
-    
-    url = "http://www.gutenberg.org/files/786/786-0.txt"
-    oliver_twist= urlopen(url).read()
-    a = open('oliver_twist1.txt','w')
-    a.write(oliver_twist)
-    a.close()
-    
+    #Note: After demonstrating functionality, we downloaded books directly from project gutenberg beucase it was simpler and quicker.    
 def read_book(book):
+    """ Opens a book and reads it as a string. Book must be in the form name.txt"""
     a = open(book,'r')
     returns = a.read()
     a.close()
     return returns
 
 def strip_extra(book):
+    """Removes the additional text that project gutenberg adds to a book"""
     a = read_book(book)
-
+    #Because project gutenberg ends and finishes a book with many different strings, several posibilities are attempted.
     try:
         end = a.index('End of the Project Gutenberg')
     except ValueError:
@@ -59,6 +56,7 @@ def strip_extra(book):
     return a[start:end] 
         
 def delete_extra(book):
+    """ Srips additional UTF-8 formating from the downloaded book and returns it as a list of words"""
     b = strip_extra(book)
     b.lower
     a = b.split()
@@ -90,63 +88,40 @@ def makesdic(book):
     dic = {'_all_':0}
     dic_100 = {}
     return collections.Counter(text)
-    #for w in text:
-        #dic['_all_'] +=1
-        #if w in dic.keys():
-            #dic[w] = dic[w]+1
-            #if dic[w] >100:
-                #dic_100[w] = dic[w]
-            
-        #else:
-            #dic[w] = 1
-   # return dic_100
-    
 
-    
+
 def word_freq(book):
+    """ Changes the word count into a frequency count. Input is a dicionary of word counts. Output is a dictionary of word frequencies"""
     count = makesdic(book)
     a = sum(count.values())
     for w in count:
-        #f w != '_all_':  
         count[w] = float(count[w])/(a)
     return count
     
     
-def list_sort(book):
-    #a = word_freq(book)
-    a = {'the':5,'said':40,'blah':1,'super':553}
-    b = [(v, k) for v,k in a.iteritems()]
-    #sort = sorted(b, key=lambda tup: tup[0])
-    return sort
-    
 def compare(book1,book2):
+    """ Compares two books based on word frequency and returns the cosine similarity between them. The input is the name of two  books (in the format name.txt). The output is the cosine similarity between them"""
     freq1 = word_freq(book1)
     freq2 = word_freq(book2)
     
-    #freq1 = {'red':5,'blue':24,'green':2}
-    #freq2 = {'red':2,'green':5,'purple':4}
-    c = dict(freq1.items() + freq2.items())
-    all_words = map(list,zip(c))
-    #freq1_list = recursive_flatten(map(list,zip(freq1)))
-    #freq2_list = recursive_flatten(map(list,zip(freq2)))
-    freq1_list = freq1.values()
+    c = dict(freq1.items() + freq2.items()) #findinf the words that appear in both books 
+    all_words = map(list,zip(c)) ##mapping the dictionary to a list
+
+    freq1_list = freq1.values() ## getting the frquencies of those lists, to find magnitudes later
     freq2_list = freq2.values()
-    #print freq2_list
-    #return c
-    flattened = recursive_flatten(all_words)
+
+    flattened = recursive_flatten(all_words) ##map returns a nested list, so this flattens the nested list
     L1 = []
     L2 = []
-    for w in flattened:
+    for w in flattened: ## This loop determines the frequencies of the words in both books. If a word is not in a book, a frequency of zero is appended
         L1.append(freq1.get(w, 0))
         L2.append(freq2.get(w, 0))
         
-    #print L1
-    #print L2
     mag1 = magnitude(freq1_list)
     mag2 = magnitude(freq2_list)
     dot = dotprod(L1,L2)
     
-    similarity = dot/(mag1*mag2)
+    similarity = dot/(mag1*mag2) #finds cosine similarity
     return similarity
     
     
@@ -155,6 +130,7 @@ def compare(book1,book2):
     
     
 def magnitude(L):
+    """ Returns the magnitude of a list"""
     if type(L) != list:
         raise Exception("L must be a list")
     a = 0
@@ -164,6 +140,7 @@ def magnitude(L):
     return a**.5
 
 def dotprod(L1,L2):
+    """Returns the dot product of two lists that are the same length"""
     if len(L1) != len(L2):
         raise Exception('Lenghts of vectors must be equal')
     i = 0
@@ -176,6 +153,7 @@ def dotprod(L1,L2):
         
 
 def recursive_flatten(L):
+    """Flattens a nested list"""
     L1 = []
     for i in range(len(L)):
         if type(L[i])==list:
@@ -185,47 +163,28 @@ def recursive_flatten(L):
     return L1
   
 
-def make_plot(Z):
-    if type(A) != list:
-        raise Exception("TypeError: make_plot input must be a list")
-        
-    #make x and y arrays
-    i = 0
-    for i in range(len(A)):
-        B = A[i]
-        
-        for j in range(len(B)):
-            Y_int[j] = j
-            X_int[j] = i
-        X.append(X_int)
-        Y.append(Y_int)
-    
-    #finding minimums and maximums of the z array
-    z_min, z_max = np.abs(Z).min(), np.abs(Z).max()
 
-    mpl.pyplot.pcolor(X,Y,Z,vmin=z_min, vmax=z_max)
-        
-    mpl.colorbar()
 
 def compare_all():
-    l1 = ['Plato.txt','Dar_voy.txt','PP_Aust.txt','hard_times.txt']
+    """Compares 6 different books downloaded from project gutenberg and creates an array with the similarity values"""
+    l1 = ['Plato.txt','Dar_voy.txt','PP_Aust.txt','hard_times.txt','Grimm.txt','oliver_twist.txt']
     output1 = []
     compare_once = {}
     for w in l1:
         l_int = []
         for x in l1:
-            if w ==x:
+            if w ==x: ## if the two books are the same, similarity is assumed to be perfect
                 compare_int =1.0
 
             else:
                 try:
-                    compare_int = compare_once[x,w]
+                    compare_int = compare_once[x,w] ## if the two books have already been compared, that value is returned
                 except:
-                    compare(w,x)
+                    compare(w,x) ##finding the similarity
                     compare_int = compare(w,x)
-                    compare_once[w,x] = compare_int
+                    compare_once[w,x] = compare_int ##adding it to the intermediate list
 
-            l_int.append(compare_int)  
+            l_int.append(compare_int)  #filling in the array of similarities
             print compare_int
             
 
@@ -234,17 +193,5 @@ def compare_all():
 
 
 if __name__ == '__main__':
-    #a =  read_book('hard_times.txt')
-
-    #print test('oliver_twist1.txt')
-    #print makesdic('oliver_twist.txt')
-    #print word_freq('oliver_twist.txt')
-    #a = word_freq
-
-    #print list_sort('blah')
     print compare_all()
-    #print word_freq('hard_times.txt')
-    #print strip_extra('Dar_voy.txt')
-    #z = [[1,2,3],[4,5,6],[7,8,9]]
-    #make_plot(z)
-    #mpl.savefig('color.png')
+ 
