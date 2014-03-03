@@ -8,6 +8,9 @@ import pickle
 from pattern.web import *
 from urllib import urlopen
 import collections
+#import numpy
+
+#import matplotlib as mpl
 
 def import_books():
     
@@ -56,11 +59,9 @@ def strip_extra(book):
     return a[start:end] 
         
 def delete_extra(book):
-    #a = ['asdf','asdf','adsf','\xe2\x80\x94asdf','asdf']
     b = strip_extra(book)
     b.lower
     a = b.split()
-    #a = ['\xe2\x80\x98My', 'dear', 'Bounderby,\xe2\x80\x99', 'Mr.', 'Gradgrind', 'began', 'in', 'reply.', '\xe2\x80\x98Now,', 'you\xe2\x80\x99ll', 'excuse', 'me,\xe2\x80\x99', 'said', 'Bounderby,', '\xe2\x80\x98but', 'I', 'don\xe2\x80\x99t', 'want', 'to', 'be', 'too', 'dear.', 'That,', 'to', 'start', 'with.', 'When', 'I']
     i = 0
     for i in range(len(a)):
         if '\xe2\x80\x94' in a[i]:
@@ -183,7 +184,55 @@ def recursive_flatten(L):
            L1.append(L[i])
     return L1
   
+
+def make_plot(Z):
+    if type(A) != list:
+        raise Exception("TypeError: make_plot input must be a list")
+        
+    #make x and y arrays
+    i = 0
+    for i in range(len(A)):
+        B = A[i]
+        
+        for j in range(len(B)):
+            Y_int[j] = j
+            X_int[j] = i
+        X.append(X_int)
+        Y.append(Y_int)
     
+    #finding minimums and maximums of the z array
+    z_min, z_max = np.abs(Z).min(), np.abs(Z).max()
+
+    mpl.pyplot.pcolor(X,Y,Z,vmin=z_min, vmax=z_max)
+        
+    mpl.colorbar()
+
+def compare_all():
+    l1 = ['Plato.txt','Dar_voy.txt','PP_Aust.txt','hard_times.txt']
+    output1 = []
+    compare_once = {}
+    for w in l1:
+        l_int = []
+        for x in l1:
+            if w ==x:
+                compare_int =1.0
+
+            else:
+                try:
+                    compare_int = compare_once[x,w]
+                except:
+                    compare(w,x)
+                    compare_int = compare(w,x)
+                    compare_once[w,x] = compare_int
+
+            l_int.append(compare_int)  
+            print compare_int
+            
+
+        output1.append(l_int)
+    return output1
+
+
 if __name__ == '__main__':
     #a =  read_book('hard_times.txt')
 
@@ -193,6 +242,9 @@ if __name__ == '__main__':
     #a = word_freq
 
     #print list_sort('blah')
-    print compare('our_mutual_friend.txt','Dar_voy.txt')
+    print compare_all()
     #print word_freq('hard_times.txt')
     #print strip_extra('Dar_voy.txt')
+    #z = [[1,2,3],[4,5,6],[7,8,9]]
+    #make_plot(z)
+    #mpl.savefig('color.png')
